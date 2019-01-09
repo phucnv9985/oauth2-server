@@ -12,7 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
+		http.csrf().disable().authorizeRequests()
 
 				/*
 				 * allow any user to access the main page, the login page, and the resources
@@ -30,14 +30,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				 * configure that a user with either role "ROLE_CUSTOMER" or "ROLE_VENDOR" will
 				 * have access to the customer pages
 				 */
-				.antMatchers("/customer/**").hasAnyRole("CUSTOMER, VENDOR")
+				.antMatchers("/customer/**").hasAnyRole("CUSTOMER, VENDOR").anyRequest().authenticated()
 
 				.and()
 
 				/*
 				 * automatically generate the log in page
 				 */
-				.formLogin();
+				.formLogin().loginPage("/login").permitAll();
 	}
     @Autowired
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
